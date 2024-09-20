@@ -15,6 +15,7 @@ class Game:
 
         self.clock = pygame.time.Clock()
         self.running: bool = True
+        self.can_laser: bool = True
         self.laser_tick: int = 0
 
         self.player: Spaceship = Spaceship()
@@ -26,6 +27,7 @@ class Game:
 
         if keys[K_SPACE] and self.laser_tick == 0:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
+            self.can_laser = False
 
     
     def render(self) -> None:
@@ -53,8 +55,11 @@ class Game:
                 
             self.screen.fill("black")
             self.render()
-            self.laser_tick += 1
-            self.laser_tick = 0 if self.laser_tick >= 40 else self.laser_tick
+            if self.can_laser == False:
+                self.laser_tick += 1
+                if self.laser_tick >= 40:
+                    self.laser_tick = 0
+                    self.can_laser = True
 
         pygame.quit()
 

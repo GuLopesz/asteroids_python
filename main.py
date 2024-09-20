@@ -14,7 +14,8 @@ class Game:
         pygame.display.set_caption("Asteroids")
 
         self.clock = pygame.time.Clock()
-        self.running = True
+        self.running: bool = True
+        self.laser_tick: int = 0
 
         self.player: Spaceship = Spaceship()
         self.lasers: List[Laser] = []
@@ -23,7 +24,7 @@ class Game:
         "handle game input"
         keys = pygame.key.get_pressed()
 
-        if keys[K_SPACE]:
+        if keys[K_SPACE] and self.laser_tick == 0:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
 
     
@@ -52,6 +53,8 @@ class Game:
                 
             self.screen.fill("black")
             self.render()
+            self.laser_tick += 1
+            self.laser_tick = 0 if self.laser_tick >= 40 else self.laser_tick
 
         pygame.quit()
 

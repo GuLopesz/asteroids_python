@@ -1,28 +1,38 @@
 import pygame
 from pygame.locals import *
 from entities.spaceship import *
+from entities.laser import *
 from common.defs import *
+from typing import List
 
 class Game:
-    
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def __init__(self) -> None:
         "init game stuff"
         pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Asteroids")
 
         self.clock = pygame.time.Clock()
+        self.running = True
 
         self.player: Spaceship = Spaceship()
+        self.lasers: List[Laser] = []
 
-        self.running = True
+    def handle_input(self) -> None:
+        "handle game input"
+        keys = pygame.key.get_pressed()
+
+        if keys[K_SPACE]:
+            self.lasers.append(Laser(self.player.pos, self.player.angle))
+
     
     def render(self) -> None:
         "render stuff"
-        
-        self.player.render()
+        for l in self.lasers:
+            l.render(self.screen)
 
+        self.player.render(self.screen)
         pygame.display.flip()
 
     def run(self) -> None:
@@ -34,9 +44,13 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            self.handle_input()
+
             self.player.update()
+            for l in self.lasers:
+                l.update()
                 
-            Game.screen.fill("black")
+            self.screen.fill("black")
             self.render()
 
         pygame.quit()

@@ -3,7 +3,6 @@ import math
 import pygame
 from pygame.locals import *
 from common.defs import *
-from main import Game
 
 class Spaceship(Obj):
     def __init__ (self, angle = 90) -> None:
@@ -11,14 +10,14 @@ class Spaceship(Obj):
         self.angle = angle
         self.speed = 2
 
-    def render(self) -> None:
+    def render(self, screen) -> None:
         "render spaceship"
         triangle_points = self.get_triangle_points()
 
-        pygame.draw.polygon(Game.screen, WHITE, triangle_points)
+        pygame.draw.polygon(screen, WHITE, triangle_points)
 
     def update(self) -> None:
-        "update spaceship state"
+        "update spaceship"
         self.handle_input()
         
     def handle_input(self) -> None:

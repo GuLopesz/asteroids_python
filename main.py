@@ -27,7 +27,7 @@ class Game:
 
         if keys[K_a]:
             self.angle = (self.angle + 5) % 360 
-            
+
         if keys[K_d]:
             self.angle = (self.angle - 5) % 360
 
@@ -49,6 +49,14 @@ class Game:
         )
 
         return [front_point, left_point, right_point]
+    
+    def render(self) -> None:
+        "render stuff"
+        triangle_points = self.get_triangle_points(self.spaceship_pos, self.angle, SPACESHIP_WIDTH)
+
+        pygame.draw.polygon(self.screen, WHITE, triangle_points)
+
+        pygame.display.flip()
 
     def run(self) -> None:
         "main game loop"
@@ -63,11 +71,7 @@ class Game:
                 
             self.screen.fill("black")
 
-            triangle_points = self.get_triangle_points(self.spaceship_pos, self.angle, SPACESHIP_WIDTH)
-
-            pygame.draw.polygon(self.screen, WHITE, triangle_points)
-
-            pygame.display.flip()
+            self.render()
 
         pygame.quit()
 

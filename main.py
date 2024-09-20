@@ -28,6 +28,12 @@ class Game:
         if keys[K_SPACE] and self.laser_tick == 0:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
             self.can_laser = False
+    
+    def clear_lasers(self) -> None:
+        "delete lasers that outbounds the screen"
+        for l in self.lasers:
+            if l.pos.x >= SCREEN_WIDTH or l.pos.x < 0 or l.pos.y >= SCREEN_HEIGHT or l.pos.y < 0:
+                self.lasers.remove(l)
 
     
     def render(self) -> None:
@@ -55,6 +61,7 @@ class Game:
                 
             self.screen.fill("black")
             self.render()
+            self.clear_lasers()
             if self.can_laser == False:
                 self.laser_tick += 1
                 if self.laser_tick >= 40:

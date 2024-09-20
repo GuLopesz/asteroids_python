@@ -13,16 +13,18 @@ class Asteroid(Obj):
         self.kind = kind
         self.points = self.gen_random_polygon(7, (100, 100), 65, 30)
         self.speed = 2
+        self.t_points = [(x + self.pos.x, y + self.pos.y) for x, y in self.points]
         
 
     def render(self, screen) -> None:
         "render asteroid"
-        pygame.draw.polygon(screen, WHITE, self.points, 1)
+        pygame.draw.polygon(screen, WHITE, self.t_points, 1)
 
     def update(self) -> None:
         "update asteroid"
         self.pos.x += math.cos(math.radians(self.angle)) * self.speed
         self.pos.y += -(math.sin(math.radians(self.angle))) * self.speed
+        self.t_points = [(x + self.pos.x, y + self.pos.y) for x, y in self.points]
 
     def gen_random_polygon(self, sides, center, radius, noise) -> list:
         "generate random polygon points"
@@ -37,11 +39,11 @@ class Asteroid(Obj):
 
     def check_collision(self, pos: pygame.Vector2) -> bool:
         "collision detection"
-        n = len(self.points)
+        n = len(self.t_points)
         inside = False
-        p1x, p1y = self.points[0]
+        p1x, p1y = self.t_points[0]
         for i in range(n + 1):
-            p2x, p2y = self.points[i % n]
+            p2x, p2y = self.t_points[i % n]
             if pos.y > min(p1y, p2y):
                 if pos.y <= max(p1y, p2y):
                     if pos.x <= max(p1x, p2x):

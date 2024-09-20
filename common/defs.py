@@ -1,0 +1,12 @@
+# screen constants
+
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 480
+
+# spaceship constants
+SPACESHIP_WIDTH = 20
+SPACESHIP_HEIGHT = 20
+SPACESHIP_SPEED = 2
+
+# colors
+WHITE = (255, 255, 255)

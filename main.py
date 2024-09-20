@@ -1,54 +1,53 @@
 import pygame
-from pygame.locals import * 
-import sys
-import math 
+from pygame.locals import *
+import math
+from common.defs import *
 
-pygame.init()
+class Game:
+    def __init__(self, angle = 90) -> None:
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Asteroids")
 
-##SCREEN CONFIGS 
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 480
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Asteroids")
-clock = pygame.time.Clock()
-running = True
+        self.clock = pygame.time.Clock()
 
-##SPACESHIP CONFIGS
-SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 30, 50
-spaceship_pos = pygame.Vector2((screen.get_width() / 2), (screen.get_height() / 2))
-SPACESHIP_COLOR = (255, 255, 255)
-SPACESHIP_SPEED = 3
-angle = 0
+        self.running = True
 
-##INÍCIO DO LOOP 
-while running:
-    clock.tick(60) 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        self.spaceship_pos = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
+        self.angle = angle
 
-    keys = pygame.key.get_pressed()
-    if keys[K_w]:
-        spaceship_pos.x += math.cos(math.radians(angle)) * SPACESHIP_SPEED
-        spaceship_pos.y += -(math.sin(math.radians(angle))) * SPACESHIP_SPEED
-        spaceship_pos.x %= screen.get_width()
-        spaceship_pos.y %= screen.get_height()
-    
-    if keys[K_a]:
-        angle = (angle + 5) % 360
+    def run(self) -> None:
+        while self.running:
+            self.clock.tick(60)
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
 
-    if keys[K_d]:
-        angle = (angle - 5) % 360
+            keys = pygame.key.get_pressed()
+            if keys[K_w]:
+                self.spaceship_pos.x += math.cos(math.radians(self.angle)) * SPACESHIP_SPEED
+                self.spaceship_pos.y += -(math.sin(math.radians(self.angle))) * SPACESHIP_SPEED
+            if keys[K_a]:
+                self.angle = (self.angle + 5) % 360 
+            if keys[K_d]:
+                self.angle = (self.angle - 5) % 360
+                
+                
+            self.screen.fill("black")
 
-    screen.fill("black")
+            spaceship_surface = pygame.Surface((SPACESHIP_WIDTH, SPACESHIP_HEIGHT), pygame.SRCALPHA)
+            pygame.draw.rect(spaceship_surface, WHITE, (0, 0, SPACESHIP_WIDTH, SPACESHIP_HEIGHT))
 
-    ## CÓDIGO DE ROTAÇÃO
-    spaceship_surface = pygame.Surface((SPACESHIP_HEIGHT, SPACESHIP_WIDTH), pygame.SRCALPHA)
-    pygame.draw.rect(spaceship_surface, (SPACESHIP_COLOR), (0, 0, SPACESHIP_WIDTH, SPACESHIP_HEIGHT))
-    rotated_spaceship = pygame.transform.rotate(spaceship_surface, angle-90)
-    rotated_rect = rotated_spaceship.get_rect(center=spaceship_pos)
-    screen.blit(rotated_spaceship, rotated_rect)
-    
-    
-    pygame.display.flip()
+            rotated_spaceship = pygame.transform.rotate(spaceship_surface, self.angle-90)
+            rotated_rect = rotated_spaceship.get_rect(center=self.spaceship_pos)
 
-pygame.quit()
+            self.screen.blit(rotated_spaceship, rotated_rect)
+
+            pygame.display.flip()
+
+        pygame.quit()
+
+if __name__ == '__main__':
+    game: Game = Game()
+    game.run()

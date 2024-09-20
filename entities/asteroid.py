@@ -11,7 +11,19 @@ class Asteroid(Obj):
         self.pos = pygame.Vector2(pos.x, pos.y)
         self.angle = angle
         self.kind = kind
-        self.points = self.gen_random_polygon(7, (100, 100), 65, 30)
+        match kind:
+            case AsteroidType.SMALL:
+                self.radius = 15
+                self.points = self.gen_random_polygon(5, (0, 0), self.radius, 5)
+            case AsteroidType.BIG:
+                self.radius = 30
+                self.points = self.gen_random_polygon(6, (0, 0), self.radius, 10)
+            case AsteroidType.MEGA:
+                self.radius = 45
+                self.points = self.gen_random_polygon(7, (0, 0), self.radius, 10)
+            case _:
+                self.radius = 45
+                self.points = self.gen_random_polygon(7, (0, 0), self.radius, 10)
         self.speed = 2
         self.t_points = [(x + self.pos.x, y + self.pos.y) for x, y in self.points]
         
@@ -24,6 +36,16 @@ class Asteroid(Obj):
         "update asteroid"
         self.pos.x += math.cos(math.radians(self.angle)) * self.speed
         self.pos.y += -(math.sin(math.radians(self.angle))) * self.speed
+        if self.pos.x - self.radius > SCREEN_WIDTH:
+            self.pos.x = 0 - self.radius
+        elif self.pos.x + self.radius < 0:
+            self.pos.x = SCREEN_WIDTH + self.radius
+
+        if self.pos.y - self.radius > SCREEN_HEIGHT:
+            self.pos.y = 0 - self.radius
+        elif self.pos.y + self.radius < 0:
+            self.pos.y = SCREEN_HEIGHT + self.radius
+        
         self.t_points = [(x + self.pos.x, y + self.pos.y) for x, y in self.points]
 
     def gen_random_polygon(self, sides, center, radius, noise) -> list:

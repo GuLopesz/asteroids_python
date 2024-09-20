@@ -22,7 +22,7 @@ class Game:
 
         self.player: Spaceship = Spaceship()
         self.lasers: List[Laser] = []
-        self.asteroids: List[Asteroid] = [Asteroid(pygame.Vector2(0, 0), 360, AsteroidType.MEGA)]
+        self.asteroids: List[Asteroid] = [Asteroid(pygame.Vector2(500, 100), 270, AsteroidType.MEGA)]
 
     def handle_input(self) -> None:
         "handle game input"
@@ -31,6 +31,7 @@ class Game:
         if keys[K_SPACE] and self.laser_tick == 0:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
             self.can_laser = False
+            self.boost_tick = 0
     
     def clear_lasers(self) -> None:
         "delete lasers that outbounds the screen"
@@ -41,6 +42,7 @@ class Game:
 
     def render(self) -> None:
         "render stuff"
+        self.screen.fill(BLACK)
         
         for l in self.lasers:
             l.render(self.screen)
@@ -74,9 +76,9 @@ class Game:
                 if (a.check_collision(pygame.Vector2(player_front[0], player_front[1])) or
                     a.check_collision(pygame.Vector2(player_left[0], player_left[1])) or
                     a.check_collision(pygame.Vector2(player_right[0], player_right[1]))):
+                    # TODO: game over
                     print("game over")
 
-            self.screen.fill(BLACK)
             self.render()
             self.clear_lasers()
             if self.can_laser == False:

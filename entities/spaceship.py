@@ -9,10 +9,11 @@ class Spaceship(Obj):
         self.pos   = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.angle = angle
         self.speed: float        = 0
-        self.acceleration: float = 0.1
+        self.acceleration: float = 0.15
         self.max_speed: float    = 3
         self.friction: float     = 0.03
         self.foward_angle = angle
+        self.boost_tick: int = 0
 
     def render(self, screen) -> None:
         "render spaceship"
@@ -27,10 +28,16 @@ class Spaceship(Obj):
         
         if self.speed > 0:
             self.speed -= self.friction
+
+        if self.speed <= 0:
+            self.speed = 0
         
         self.pos.x += math.cos(math.radians(self.foward_angle)) * self.speed
         self.pos.y += -(math.sin(math.radians(self.foward_angle))) * self.speed
+        self.pos.x %= SCREEN_WIDTH
+        self.pos.y %= SCREEN_HEIGHT
         self.handle_input()
+        self.boost_tick += 1
         
     def handle_input(self) -> None:
         "handle keyboard input"
@@ -41,7 +48,6 @@ class Spaceship(Obj):
             self.foward_angle = self.angle
         elif keys[K_a]:
             self.angle = (self.angle + 5) % 360 
-
         elif keys[K_d]:
             self.angle = (self.angle - 5) % 360
         

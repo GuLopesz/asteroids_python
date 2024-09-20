@@ -1,10 +1,11 @@
-import random
 import pygame
 from pygame.locals import *
 from entities.spaceship import *
 from entities.laser import *
+from entities.asteroid import *
 from common.defs import *
 from typing import List
+from common.asteroid_type import AsteroidType
 
 class Game:
 
@@ -21,7 +22,7 @@ class Game:
 
         self.player: Spaceship = Spaceship()
         self.lasers: List[Laser] = []
-        self.asteroid = self.gen_random_polygon(7, (100, 100), 65, 30)
+        self.asteroid: Asteroid = Asteroid(pygame.Vector2(100, SCREEN_HEIGHT/2), 0, AsteroidType.MEGA)
 
     def handle_input(self) -> None:
         "handle game input"
@@ -30,35 +31,23 @@ class Game:
         if keys[K_SPACE] and self.laser_tick == 0:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
             self.can_laser = False
-            self.asteroid = self.gen_random_polygon(7, (100, 100), 65, 30)
     
     def clear_lasers(self) -> None:
         "delete lasers that outbounds the screen"
         for l in self.lasers:
             if l.pos.x >= SCREEN_WIDTH or l.pos.x < 0 or l.pos.y >= SCREEN_HEIGHT or l.pos.y < 0:
                 self.lasers.remove(l)
-
-    def gen_random_polygon(self, sides, center, radius, noise) -> list:
-        points = []
-        angle = 0
-        for _ in range(sides):
-            x = center[0] + (radius + random.uniform(-noise, noise)) * math.cos(angle)
-            y = center[1] + (radius + random.uniform(-noise, noise)) * math.sin(angle)
-            points.append((x, y))
-            angle += 2 * math.pi / sides
-        return points
-    
-    def render_asteroids(self) -> None:
-        pygame.draw.polygon(self.screen, BLUE, self.asteroid, 0)
+        
 
     def render(self) -> None:
         "render stuff"
+        
         for l in self.lasers:
             l.render(self.screen)
 
-        self.player.render(self.screen)
+        self.asteroid.render(self.screen)
 
-        self.render_asteroids()
+        self.player.render(self.screen)
 
         pygame.display.flip()
 
@@ -74,8 +63,11 @@ class Game:
             self.handle_input()
 
             self.player.update()
+            
             for l in self.lasers:
                 l.update()
+            
+            self.asteroid.update()
 
             self.screen.fill(BLACK)
             self.render()

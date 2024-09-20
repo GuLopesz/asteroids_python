@@ -14,7 +14,7 @@ class Spaceship(Obj):
         "render spaceship"
         triangle_points = self.get_triangle_points()
 
-        pygame.draw.polygon(screen, WHITE, triangle_points)
+        pygame.draw.polygon(screen, WHITE, triangle_points, 1)
 
     def update(self) -> None:
         "update spaceship"

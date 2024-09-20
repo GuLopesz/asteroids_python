@@ -10,7 +10,7 @@ class Spaceship(Obj):
         self.angle = angle
         self.speed: float        = 0
         self.acceleration: float = 0.15
-        self.max_speed: float    = 3
+        self.max_speed: float    = 4
         self.friction: float     = 0.03
         self.foward_angle = angle
         self.boost_tick: int = 0
@@ -34,8 +34,19 @@ class Spaceship(Obj):
         
         self.pos.x += math.cos(math.radians(self.foward_angle)) * self.speed
         self.pos.y += -(math.sin(math.radians(self.foward_angle))) * self.speed
-        self.pos.x %= SCREEN_WIDTH
-        self.pos.y %= SCREEN_HEIGHT
+
+        [front_point, _, _] = self.get_triangle_points()
+        if front_point[0] - (SPACESHIP_WIDTH / 2) > SCREEN_WIDTH:
+            self.pos.x = 0 - (SPACESHIP_WIDTH / 2)
+        elif front_point[0] + (SPACESHIP_WIDTH / 2) < 0:
+            self.pos.x = SCREEN_WIDTH + (SPACESHIP_WIDTH / 2)
+        
+        if front_point[1] - (SPACESHIP_WIDTH / 2) > SCREEN_HEIGHT:
+            self.pos.y = 0 - (SPACESHIP_WIDTH / 2)
+        elif front_point[1] + (SPACESHIP_WIDTH / 2) < 0:
+            self.pos.y = SCREEN_HEIGHT + (SPACESHIP_HEIGHT / 2)
+
+
         self.handle_input()
         self.boost_tick += 1
         

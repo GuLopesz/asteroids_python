@@ -12,7 +12,7 @@ class Game:
     def __init__(self) -> None:
         "init game stuff"
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
         pygame.display.set_caption("Asteroids")
 
         self.clock = pygame.time.Clock()

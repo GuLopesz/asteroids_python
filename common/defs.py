@@ -1,6 +1,6 @@
 # screen constants
-SCREEN_WIDTH  = 800
-SCREEN_HEIGHT = 480
+SCREEN_WIDTH  = 1920
+SCREEN_HEIGHT = 1080
 
 # spaceship constants
 SPACESHIP_WIDTH  = 20

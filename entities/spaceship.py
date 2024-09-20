@@ -8,7 +8,11 @@ class Spaceship(Obj):
     def __init__ (self, angle = 90) -> None:
         self.pos   = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.angle = angle
-        self.speed = 2
+        self.speed: float        = 0
+        self.acceleration: float = 0.1
+        self.max_speed: float    = 3
+        self.friction: float     = 0.03
+        self.foward_angle = angle
 
     def render(self, screen) -> None:
         "render spaceship"
@@ -18,6 +22,14 @@ class Spaceship(Obj):
 
     def update(self) -> None:
         "update spaceship"
+        if self.speed > self.max_speed:
+            self.speed = self.max_speed
+        
+        if self.speed > 0:
+            self.speed -= self.friction
+        
+        self.pos.x += math.cos(math.radians(self.foward_angle)) * self.speed
+        self.pos.y += -(math.sin(math.radians(self.foward_angle))) * self.speed
         self.handle_input()
         
     def handle_input(self) -> None:
@@ -25,13 +37,12 @@ class Spaceship(Obj):
         keys = pygame.key.get_pressed()
 
         if keys[K_w]:
-            self.pos.x += math.cos(math.radians(self.angle)) * self.speed
-            self.pos.y += -(math.sin(math.radians(self.angle))) * self.speed
-
-        if keys[K_a]:
+            self.speed += self.acceleration
+            self.foward_angle = self.angle
+        elif keys[K_a]:
             self.angle = (self.angle + 5) % 360 
 
-        if keys[K_d]:
+        elif keys[K_d]:
             self.angle = (self.angle - 5) % 360
         
     def get_triangle_points(self, size = SPACESHIP_WIDTH) -> list:

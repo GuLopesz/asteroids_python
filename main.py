@@ -18,21 +18,43 @@ class Game:
         self.angle = angle
 
     def handle_input(self) -> None:
-            "handle keyboard input"
-            keys = pygame.key.get_pressed()
-            if keys[K_w]:
-                self.spaceship_pos.x += math.cos(math.radians(self.angle)) * SPACESHIP_SPEED
-                self.spaceship_pos.y += -(math.sin(math.radians(self.angle))) * SPACESHIP_SPEED
-            if keys[K_a]:
-                self.angle = (self.angle + 5) % 360 
-            if keys[K_d]:
-                self.angle = (self.angle - 5) % 360
+        "handle keyboard input"
+        keys = pygame.key.get_pressed()
+
+        if keys[K_w]:
+            self.spaceship_pos.x += math.cos(math.radians(self.angle)) * SPACESHIP_SPEED
+            self.spaceship_pos.y += -(math.sin(math.radians(self.angle))) * SPACESHIP_SPEED
+
+        if keys[K_a]:
+            self.angle = (self.angle + 5) % 360 
+            
+        if keys[K_d]:
+            self.angle = (self.angle - 5) % 360
+
+    def get_triangle_points(self, pos, angle, size) -> list:
+        "calculate points for the spaceship triangle"
+        half_size = size / 2
+
+        front_point = (
+            pos.x + math.cos(math.radians(angle)) * size,
+            pos.y - math.sin(math.radians(angle)) * size
+        )
+        left_point = (
+            pos.x + math.cos(math.radians(angle + 120)) * half_size,
+            pos.y - math.sin(math.radians(angle + 120)) * half_size
+        )
+        right_point = (
+            pos.x + math.cos(math.radians(angle - 120)) * half_size,
+            pos.y - math.sin(math.radians(angle - 120)) * half_size
+        )
+
+        return [front_point, left_point, right_point]
 
     def run(self) -> None:
         "main game loop"
         while self.running:
             self.clock.tick(60)
-            
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -41,13 +63,9 @@ class Game:
                 
             self.screen.fill("black")
 
-            spaceship_surface = pygame.Surface((SPACESHIP_WIDTH, SPACESHIP_HEIGHT), pygame.SRCALPHA)
-            pygame.draw.rect(spaceship_surface, WHITE, (0, 0, SPACESHIP_WIDTH, SPACESHIP_HEIGHT))
+            triangle_points = self.get_triangle_points(self.spaceship_pos, self.angle, SPACESHIP_WIDTH)
 
-            rotated_spaceship = pygame.transform.rotate(spaceship_surface, self.angle-90)
-            rotated_rect = rotated_spaceship.get_rect(center=self.spaceship_pos)
-
-            self.screen.blit(rotated_spaceship, rotated_rect)
+            pygame.draw.polygon(self.screen, WHITE, triangle_points)
 
             pygame.display.flip()
 

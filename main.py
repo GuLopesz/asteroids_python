@@ -32,6 +32,10 @@ class Game:
             self.lasers.append(Laser(self.player.pos, self.player.angle))
             self.can_laser = False
             self.boost_tick = 0
+        
+        if keys[K_ESCAPE]:
+            self.running = False
+
     
     def clear_lasers(self) -> None:
         "delete lasers that outbounds the screen"
